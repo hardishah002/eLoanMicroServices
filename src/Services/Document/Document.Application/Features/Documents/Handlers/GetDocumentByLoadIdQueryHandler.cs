@@ -3,11 +3,6 @@ using Document.Application.Interfaces;
 using Document.Application.Models;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Document.Application.Features.Documents.Handlers
 {

@@ -1,4 +1,5 @@
-﻿using Authentication.Application.Features.Login;
+﻿using Authentication.Application.Features.JwtToken;
+using Authentication.Application.Features.Login;
 using Authentication.Application.Features.Register;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -28,6 +29,13 @@ namespace Authentication.API.Controllers
         {
             var result = await _mediator.Send(command);
             return Ok(result);
+        }
+
+        [HttpPost("refresh-token")]
+        public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenCommand command)
+        { 
+            var token = await _mediator.Send(command); 
+            return Ok(new { token });
         }
     }
 }

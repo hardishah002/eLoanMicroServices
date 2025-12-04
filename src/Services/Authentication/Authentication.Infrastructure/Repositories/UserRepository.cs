@@ -24,5 +24,16 @@ namespace Authentication.Infrastructure.Repositories
         {
             return await _context.Users.FirstOrDefaultAsync(a => a.Username == username);
         }
+
+        public async Task<User?> GetUserByIdAsync(Guid userId)
+        { 
+            return await _context.Users.FirstOrDefaultAsync(a => a.UserId == userId);
+        }
+
+        public async Task UpdateUserAsync(User user)
+        { 
+            _context.Users.Update(user);
+            await _context.SaveChangesAsync();
+        }
     }
 }

@@ -1,12 +1,8 @@
-﻿using Document.Application.Features.Documents.Commands;
+﻿using Document.Application.Common.Exceptions;
+using Document.Application.Features.Documents.Commands;
 using Document.Application.Interfaces;
-using Document.Domain.Entities;
+using Document.Application.Services;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Document.Application.Features.Documents.Handlers
 {
@@ -14,15 +10,21 @@ namespace Document.Application.Features.Documents.Handlers
     {
         private readonly IApplicationDbContext _context;
         private readonly IFileStorageService _service;
+        private readonly ILoanServiceClient _loanServiceClient;
 
-        public UploadDocumentCommandHandler(IApplicationDbContext context, IFileStorageService service)
+        public UploadDocumentCommandHandler(IApplicationDbContext context, IFileStorageService service, ILoanServiceClient loanServiceClient)
         {
             _context = context;
-            _service = service; 
+            _service = service;
+            _loanServiceClient = loanServiceClient;
         }
 
        public async Task<Guid> Handle(UploadDocumentCommand request, CancellationToken cancellationToken)
         {
+            bool loanExists = await _loanServiceClient.ValidateLoanAsync(request.LoanId, cancellationToken);
+
+            if (!loanExists) throw new NotFoundException($"Loan {request.LoanId} does not exist.");
+
             var filePath = await _service.SaveAsync(request.FileContent, request.FileName);
 
             var document = new Domain.Entities.Document { 

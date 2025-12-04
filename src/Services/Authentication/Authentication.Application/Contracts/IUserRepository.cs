@@ -6,5 +6,7 @@ namespace Authentication.Application.Contracts
     {
         Task AddUserAsync(User user);
         Task<User?> GetUserByUsernameAsync(string username);
+        Task<User?> GetUserByIdAsync(Guid userId);
+        Task UpdateUserAsync(User user);
     }
 }

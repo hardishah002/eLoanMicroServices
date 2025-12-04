@@ -1,6 +1,5 @@
 ﻿using FluentValidation;
 using Loan.Application.Common.Behaviors;
-using Loan.Application.Interfaces;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;

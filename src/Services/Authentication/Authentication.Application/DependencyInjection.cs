@@ -1,6 +1,5 @@
-﻿using Authentication.Application.Features.Login;
-using Authentication.Application.Features.Register;
-using FluentValidation;
+﻿using Authentication.Application.Common.Behaviors;
+using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Authentication.Application
@@ -10,8 +9,9 @@ namespace Authentication.Application
         public static IServiceCollection AddApplicationServices(this IServiceCollection services)
         {
             services.AddMediatR(a => a.RegisterServicesFromAssembly(typeof(ApplicationServiceRegistration).Assembly));
-            services.AddValidatorsFromAssemblyContaining<LoginValidator>();
-            services.AddValidatorsFromAssemblyContaining<RegisterValidator>();
+            //services.AddValidatorsFromAssemblyContaining<LoginValidator>();
+            //services.AddValidatorsFromAssemblyContaining<RegisterValidator>();
+            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 
             return services;
         }

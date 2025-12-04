@@ -12,6 +12,7 @@ namespace Authentication.Infrastructure.Configurations
             builder.Property(a => a.Username).IsRequired().HasMaxLength(50);
             builder.Property(a => a.PasswordHash).IsRequired();
             builder.Property(a => a.Role).IsRequired();
+            builder.Property(a => a.CustomerId).IsRequired(false);
 
             builder.ToTable("Users");
         }

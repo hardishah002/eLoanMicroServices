@@ -14,6 +14,7 @@ namespace Customer.Infrastructure.Configurations
             builder.Property(a => a.Phone).IsRequired();
             builder.Property(a => a.Address).IsRequired();
             builder.Property(a => a.CreatedDate).IsRequired();
+            builder.Property(a => a.CreatedBy).IsRequired().HasMaxLength(100);
 
             builder.ToTable("Customers");
         }

@@ -47,5 +47,10 @@ namespace Customer.Infrastructure.Repositories
         {
             return await _context.Customers.FirstOrDefaultAsync(x => x.CustomerId == id);
         }
+        
+        public async Task<Domain.Entities.Customer?> GetByCreatedByAsync(string createdBy)
+        {
+            return await _context.Customers.FirstOrDefaultAsync(x => x.CreatedBy == createdBy);
+        }
     }
 }

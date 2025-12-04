@@ -7,5 +7,6 @@
         Task<bool> DeleteAsync(Guid customerId);
         Task<IEnumerable<Domain.Entities.Customer>> GetAllAsync();
         Task<Domain.Entities.Customer?> GetByIdAsync(Guid id);
+        Task<Domain.Entities.Customer?> GetByCreatedByAsync(string createdBy);
     }
 }

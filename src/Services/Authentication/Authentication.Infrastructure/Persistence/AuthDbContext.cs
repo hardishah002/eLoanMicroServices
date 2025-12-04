@@ -5,10 +5,7 @@ namespace Authentication.Infrastructure.Persistence
 {
     public class AuthDbContext : DbContext
     {
-        public AuthDbContext(DbContextOptions<AuthDbContext> options) : base(options)
-        {
-
-        }
+        public AuthDbContext(DbContextOptions<AuthDbContext> options) : base(options) { }
 
         public DbSet<User> Users { get; set; }
 

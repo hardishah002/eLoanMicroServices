@@ -2,7 +2,6 @@
 using Document.API.Models.Response;
 using Document.Application.Features.Documents.Commands;
 using Document.Application.Features.Documents.Queries;
-using Document.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -11,7 +10,7 @@ namespace Document.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize]
+    [Authorize(Policy = "CustomerBound")]
     public class DocumentController : ControllerBase
     {
         private readonly IMediator _mediator;
@@ -22,18 +21,37 @@ namespace Document.API.Controllers
         }
 
         [HttpPost("upload")]
+        [RequestSizeLimit(5_000_000)]
         public async Task<IActionResult> UploadDocument([FromForm] UploadDocumentRequest request)
         {
-            if (request.File == null || request.File.Length == 0) return BadRequest("File is required");
+            if (request.File == null || request.File.Length == 0)
+            {
+                var pd = new ProblemDetails
+                {
+                    Status = StatusCodes.Status400BadRequest,
+                    Title = "File Missing",
+                    Detail = "A non-empty file is required.",
+                    Type = "https://docs.yourdomain.com/problems/file-missing",
+                    Instance = HttpContext.Request.Path
+                };
+                return StatusCode(pd.Status!.Value, pd);
+            }
 
-            using var stream = request.File.OpenReadStream();
+            await using var stream = request.File.OpenReadStream();
 
-            var command = new UploadDocumentCommand(request.LoanId, request.DocumentType, request.File.FileName,
-                Path.GetExtension(request.File.FileName).TrimStart('.'), request.File.Length, stream);
+            var command = new UploadDocumentCommand(
+                request.LoanId, 
+                request.DocumentType, 
+                request.File.FileName,
+                Path.GetExtension(request.File.FileName).TrimStart('.'), 
+                request.File.Length, 
+                stream
+            );
 
             var documentId = await _mediator.Send(command);
+            var location = Url.Action(nameof(GetDocumentsByLoanId), new { loanId = request.LoanId })!;
 
-            return Ok(new {DocumentId =  documentId});
+            return Created(location, new { DocumentId = documentId });
         }
 
         [HttpGet("{loanId}")]

@@ -9,7 +9,7 @@ namespace Loan.API.Controllers
     [ApiController]
     [Route("api/[controller]")]
     [Authorize]
-    public class LoanController: ControllerBase
+    public class LoanController : ControllerBase
     {
         private readonly IMediator _mediator;
 
@@ -40,9 +40,16 @@ namespace Loan.API.Controllers
 
             var result = await _mediator.Send(command);
 
-            if(!result) return NotFound();
+            if (!result) return NotFound();
 
             return NoContent();
+        }
+
+        [HttpGet("{id}/exists")]
+        public async Task<IActionResult> LoanExists(Guid id)
+        {
+            var loan = await _mediator.Send(new GetLoanByIdQuery(id));
+            return Ok(loan is not null);
         }
     }
 }

@@ -8,7 +8,8 @@ namespace Customer.Application.Features.Customers.Commands
         string LastName,
         string Email,
         string Phone,
-        string Address
+        string Address,
+        string CreatedBy
     ) : IRequest<CustomerResponse>;
 
 }
